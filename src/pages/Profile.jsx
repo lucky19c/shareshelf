@@ -369,6 +369,34 @@ function Profile() {
 
 
   // =========================================================
+  // LOGOUT
+  // =========================================================
+
+  const handleLogout = async () => {
+
+    setError("");
+    setMessage("");
+
+    const { error } =
+      await supabase.auth.signOut();
+
+    if (error) {
+
+      console.error(error);
+
+      setError(
+        error.message ||
+        "Failed to log out."
+      );
+
+      return;
+    }
+
+    window.location.href = "/login";
+  };
+
+
+  // =========================================================
   // OPEN DELETE MODAL
   // =========================================================
 
@@ -1214,7 +1242,9 @@ function Profile() {
         </section>
 
 
-        {/* MOBILE UPLOAD */}
+        {/* =================================================
+            MOBILE UPLOAD
+        ================================================== */}
 
         <div className="mt-10 sm:hidden">
 
@@ -1224,6 +1254,44 @@ function Profile() {
           >
             Upload Resource
           </Link>
+
+        </div>
+
+
+        {/* =================================================
+            LOGOUT
+        ================================================== */}
+
+        <div className="mt-10 border-t border-slate-200 pt-8">
+
+          <div className="rounded-2xl border border-red-200 bg-white p-6">
+
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+
+              <div>
+
+                <h2 className="text-lg font-bold text-slate-900">
+                  Account
+                </h2>
+
+                <p className="mt-1 text-sm text-slate-500">
+                  Sign out of your ShareShelf account.
+                </p>
+
+              </div>
+
+
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="rounded-lg border border-red-300 bg-white px-5 py-2.5 text-sm font-semibold text-red-600 transition hover:bg-red-50"
+              >
+                Logout
+              </button>
+
+            </div>
+
+          </div>
 
         </div>
 
