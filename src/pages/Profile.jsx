@@ -369,31 +369,31 @@ function Profile() {
 
 
   // =========================================================
-  // LOGOUT
-  // =========================================================
+// LOGOUT
+// =========================================================
 
-  const handleLogout = async () => {
+const handleLogout = async () => {
 
-    setError("");
-    setMessage("");
+  setError("");
+  setMessage("");
 
-    const { error } =
-      await supabase.auth.signOut();
+  const { error } =
+    await supabase.auth.signOut();
 
-    if (error) {
+  if (error) {
 
-      console.error(error);
+    console.error(error);
 
-      setError(
-        error.message ||
-        "Failed to log out."
-      );
+    setError(
+      error.message ||
+      "Failed to log out."
+    );
 
-      return;
-    }
+    return;
+  }
 
-    window.location.href = "/login";
-  };
+  navigate("/login");
+};
 
 
   // =========================================================
