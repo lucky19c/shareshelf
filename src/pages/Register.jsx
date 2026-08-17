@@ -31,47 +31,111 @@ function Register() {
     setSuccess("");
     setLoading(true);
 
-    // Basic username validation
-    if (form.username.length < 3) {
+    // =====================================================
+    // VALIDATION
+    // =====================================================
+
+    const username = form.username.trim();
+    const displayName = form.displayName.trim();
+    const email = form.email.trim();
+    const password = form.password;
+
+    // Username validation
+    if (username.length < 3) {
       setError("Username must be at least 3 characters.");
       setLoading(false);
       return;
     }
 
+    // Username characters validation
+    if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+      setError(
+        "Username can only contain letters, numbers, and underscores."
+      );
+      setLoading(false);
+      return;
+    }
+
+    // Display name validation
+    if (!displayName) {
+      setError("Display name cannot be empty.");
+      setLoading(false);
+      return;
+    }
+
+    // Email validation
+    if (!email) {
+      setError("Please enter your email address.");
+      setLoading(false);
+      return;
+    }
+
     // Password validation
-    if (form.password.length < 6) {
+    if (password.length < 6) {
       setError("Password must be at least 6 characters.");
       setLoading(false);
       return;
     }
 
-    const { data, error } = await supabase.auth.signUp({
-      email: form.email,
-      password: form.password,
+    try {
+      // =====================================================
+      // CREATE SUPABASE ACCOUNT
+      // =====================================================
 
-      options: {
-        data: {
-          username: form.username,
-          display_name: form.displayName,
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+
+        options: {
+          // Information stored in auth.users.user_metadata
+          data: {
+            username,
+            display_name: displayName,
+          },
+
+          // Where the user will be sent AFTER
+          // clicking the email confirmation link
+          emailRedirectTo: `${window.location.origin}/login`,
         },
-      },
-    });
+      });
 
-    if (error) {
-      setError(error.message);
+      // =====================================================
+      // SUPABASE ERROR
+      // =====================================================
+
+      if (error) {
+        console.error("Registration error:", error);
+
+        setError(error.message);
+        setLoading(false);
+
+        return;
+      }
+
+      // =====================================================
+      // SUCCESS
+      // =====================================================
+
+      if (data.user) {
+        setSuccess(
+          "An authorization link has been sent to your email. Please check your inbox and confirm your email before logging in."
+        );
+
+        // Give the user time to read the message
+        setTimeout(() => {
+          navigate("/login");
+        }, 3000);
+      }
+    } catch (err) {
+      console.error("Unexpected registration error:", err);
+
+      setError(
+        err.message ||
+          "Something went wrong while creating your account."
+      );
+    } finally {
       setLoading(false);
-      return;
     }
-
-    if (data.user) {
-      setSuccess("Account created successfully!");
-
-      setTimeout(() => {
-        navigate("/login");
-      }, 1500);
-    }
-
-    setLoading(false);
   };
 
   return (
@@ -98,6 +162,7 @@ function Register() {
         </div>
       </header>
 
+
       {/* MAIN */}
       <main className="flex min-h-[calc(100vh-4rem)] items-center justify-center px-6 py-12">
 
@@ -123,6 +188,7 @@ function Register() {
 
             </div>
 
+
             {/* ERROR */}
             {error && (
               <div className="mb-6 rounded-lg border border-red-200 bg-red-50 p-4">
@@ -131,6 +197,7 @@ function Register() {
                 </p>
               </div>
             )}
+
 
             {/* SUCCESS */}
             {success && (
@@ -141,6 +208,7 @@ function Register() {
               </div>
             )}
 
+
             {/* FORM */}
             <form
               onSubmit={handleRegister}
@@ -149,6 +217,7 @@ function Register() {
 
               {/* USERNAME */}
               <div>
+
                 <label
                   htmlFor="username"
                   className="mb-2 block text-sm font-semibold text-slate-700"
@@ -170,10 +239,13 @@ function Register() {
                 <p className="mt-2 text-xs text-slate-400">
                   Username must be at least 3 characters.
                 </p>
+
               </div>
+
 
               {/* DISPLAY NAME */}
               <div>
+
                 <label
                   htmlFor="displayName"
                   className="mb-2 block text-sm font-semibold text-slate-700"
@@ -191,10 +263,13 @@ function Register() {
                   required
                   className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
                 />
+
               </div>
+
 
               {/* EMAIL */}
               <div>
+
                 <label
                   htmlFor="email"
                   className="mb-2 block text-sm font-semibold text-slate-700"
@@ -212,10 +287,13 @@ function Register() {
                   required
                   className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
                 />
+
               </div>
+
 
               {/* PASSWORD */}
               <div>
+
                 <label
                   htmlFor="password"
                   className="mb-2 block text-sm font-semibold text-slate-700"
@@ -238,7 +316,9 @@ function Register() {
                 <p className="mt-2 text-xs text-slate-400">
                   Password must be at least 6 characters.
                 </p>
+
               </div>
+
 
               {/* SUBMIT */}
               <button
@@ -253,22 +333,27 @@ function Register() {
 
             </form>
 
+
             {/* LOGIN */}
             <div className="mt-8 border-t border-slate-100 pt-6 text-center">
 
               <p className="text-sm text-slate-500">
+
                 Already have an account?{" "}
+
                 <Link
                   to="/login"
                   className="font-semibold text-indigo-600 transition hover:text-indigo-700"
                 >
                   Login
                 </Link>
+
               </p>
 
             </div>
 
           </div>
+
 
           {/* FOOTER */}
           <p className="mt-6 text-center text-xs text-slate-400">
