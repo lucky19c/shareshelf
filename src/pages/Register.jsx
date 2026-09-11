@@ -92,10 +92,6 @@ function Register() {
             username,
             display_name: displayName,
           },
-
-          // Where the user will be sent AFTER
-          // clicking the email confirmation link
-          emailRedirectTo: `${window.location.origin}/login`,
         },
       });
 
@@ -113,18 +109,21 @@ function Register() {
       }
 
       // =====================================================
-      // SUCCESS
+      // SUCCESS — email confirmation is disabled, so signUp()
+      // returns an active session immediately. Send the user
+      // straight into the app.
       // =====================================================
 
-      if (data.user) {
-        setSuccess(
-          "An authorization link has been sent to your email. Please check your inbox and confirm your email before logging in."
-        );
+      if (data.session) {
+        navigate("/hub");
+      } else {
+        // Fallback in case email confirmation ever gets
+        // re-enabled in Supabase settings later.
+        setSuccess("Account created. Please log in.");
 
-        // Give the user time to read the message
         setTimeout(() => {
           navigate("/login");
-        }, 3000);
+        }, 1500);
       }
     } catch (err) {
       console.error("Unexpected registration error:", err);
