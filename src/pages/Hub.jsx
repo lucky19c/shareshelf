@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "../lib/supabase";
+import Footer from "../components/Footer";
 
 function Hub() {
   const [categories, setCategories] = useState([]);
@@ -185,15 +186,15 @@ function Hub() {
           HERO
       ====================================================== */}
 
-      <section className="border-b border-slate-200 bg-white">
+      <section className="flex min-h-[calc(100vh-4rem)] items-center border-b border-[#E2DFD3]">
 
-        <div className="mx-auto max-w-7xl px-6 py-20">
+        <div className="mx-auto w-full max-w-7xl px-6 py-20">
 
-          <div className="max-w-3xl">
+          <div className="max-w-2xl">
 
-            <p className="mb-4 text-sm font-semibold uppercase tracking-widest text-indigo-600">
+            <h1 className="font-serif text-4xl font-semibold leading-[1.1] tracking-tight text-[#1C201D] sm:text-5xl lg:text-6xl">
               ShareShelf
-            </p>
+            </h1>
 
             <h1 className="text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
 
@@ -662,29 +663,7 @@ function Hub() {
       </section>
 
 
-      {/* =====================================================
-          FOOTER
-      ====================================================== */}
-
-      <footer className="border-t border-slate-200 bg-white">
-
-        <div className="mx-auto max-w-7xl px-6 py-8">
-
-          <div className="flex flex-col gap-2 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between">
-
-            <p>
-              ShareShelf
-            </p>
-
-            <p>
-              Share knowledge. Help the community.
-            </p>
-
-          </div>
-
-        </div>
-
-      </footer>
+     <Footer />
 
     </div>
   );
